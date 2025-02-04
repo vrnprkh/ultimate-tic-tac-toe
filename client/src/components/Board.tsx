@@ -37,26 +37,7 @@ export default function Board({
   boardData: BoardData;
   id?: number[];
 }) {
-  const [height, setHeight] = useState(0);
-  const ref = useRef<HTMLDivElement | null>(null);
   const gameContext = UseGameContext();
-
-  useEffect(() => {
-    if (ref.current) {
-      setHeight(ref.current.clientHeight);
-    }
-    const handleResize = () => {
-      if (ref.current) {
-        setHeight(ref.current.clientHeight);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   return (
     <>
@@ -65,6 +46,14 @@ export default function Board({
           <div
             className="tileContainer"
             key={`tile-${[...id, i].join("-")}`}
+            style={{
+              background:
+                child[0] == 0 || !child[1]
+                  ? ""
+                  : child[0] == 1
+                  ? `rgba(0,63,125,0.5)`
+                  : `rgba(255,142,0,0.5)`,
+            }}
             onClick={
               !child[1]
                 ? () => {
@@ -91,21 +80,20 @@ export default function Board({
               {child[1] ? (
                 <Board boardData={child[1]} id={[...id, i]}></Board>
               ) : (
-                ""
+                <>
+                  <div
+                    className="piece"
+                    style={{
+                      background:
+                        child[0] == 0
+                          ? ""
+                          : child[0] == 1
+                          ? `rgba(0,63,125,1)`
+                          : `rgba(255,142,0,1)`,
+                    }}
+                  ></div>
+                </>
               )}
-            </div>
-            <div
-              className="overlay"
-              ref={ref}
-              style={{
-                fontSize: height,
-                color:
-                  child[0] == 1
-                    ? `rgba(0,63,125,0.75)`
-                    : `rgba(255,142,0,0.75)`,
-              }}
-            >
-              {child[0] == 1 ? "X" : child[0] == -1 ? "O" : ""}
             </div>
           </div>
         ))}
