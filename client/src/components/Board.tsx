@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./Board.css";
 import { UseGameContext } from "../providers/GameProvider";
 import { propogateBoardState } from "../util/GameManager";
+import { useSocketContext } from "../providers/SocketProvider";
 
 // boards can be nested (ultimate tictacotoe) so
 // we create a recursive board data object
@@ -33,12 +34,14 @@ const missingBorders = [
 export default function Board({
   boardData,
   id = [],
+  resolved = false,
 }: {
   boardData: BoardData;
   id?: number[];
+  resolved?: boolean;
 }) {
   const gameContext = UseGameContext();
-
+  const socketContext = useSocketContext();
   return (
     <>
       <div className="board">
@@ -49,24 +52,23 @@ export default function Board({
             style={{
               background:
                 child[0] == 0 || !child[1]
-                  ? ""
+                  ? gameContext.gameState.legalMoves.every(
+                      (val, i) => val === id[i]
+                    ) &&
+                    !child[1] &&
+                    !resolved
+                    ? `rgba(219, 204, 0, 0.5)`
+                    : ""
                   : child[0] == 1
                   ? `rgba(0,63,125,0.5)`
-                  : `rgba(255,142,0,0.5)`,
+                  : child[0] != -2
+                  ? `rgba(255,142,0,0.5)`
+                  : "rgba(30, 30, 30, 0.5)",
             }}
             onClick={
               !child[1]
                 ? () => {
-                    console.log(`tile-${[...id, i].join("-")}`);
-
-                    gameContext.setGameState({
-                      boardData: propogateBoardState(
-                        gameContext.gameState?.boardData
-                      ),
-                      turn: 1,
-                      playerNumber: 1,
-                    });
-                    console.log(gameContext.gameState);
+                    socketContext.emit("makeMove", [...id, i]);
                   }
                 : () => {}
             }
@@ -74,11 +76,18 @@ export default function Board({
             <div
               className={`tile ${missingBorders[i].join(" ")}`}
               style={{
-                borderWidth: Math.floor(Math.max(1, 3 - id.length)),
+                borderWidth: Math.min(
+                  Math.floor(Math.max(1, 3 - id.length))
+                  // Math.min(window.innerHeight, window.innerWidth) * 0
+                ),
               }}
             >
               {child[1] ? (
-                <Board boardData={child[1]} id={[...id, i]}></Board>
+                <Board
+                  boardData={child[1]}
+                  id={[...id, i]}
+                  resolved={child[0] != 0 || resolved}
+                ></Board>
               ) : (
                 <>
                   <div
@@ -90,8 +99,11 @@ export default function Board({
                           : child[0] == 1
                           ? `rgba(0,63,125,1)`
                           : `rgba(255,142,0,1)`,
+                      border: child[0] == 0 ? "" : "solid",
                     }}
-                  ></div>
+                  >
+                    {" "}
+                  </div>
                 </>
               )}
             </div>

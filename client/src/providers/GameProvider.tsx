@@ -10,19 +10,27 @@ interface GameContextType {
 
 const GameContext = React.createContext<GameContextType | undefined>(undefined);
 
-const GameProvider = ({children} : {children : ReactNode}) => {
-	const [gameState, setGameState] = useState<GameState>({boardData: createBoardData(3), playerNumber: 1, turn : 1})
-	return (
-		<GameContext.Provider value={{gameState, setGameState}}>
-			{children}
-		</GameContext.Provider>
-	)
-}
+const GameProvider = ({ children }: { children: ReactNode }) => {
+  const [gameState, setGameState] = useState<GameState>({
+    boardData: createBoardData(3),
+    player1id: "",
+    turn: 1,
+    player1name: "",
+    player2name: "",
+    legalMoves: [],
+    roomId : "",
+  });
+  return (
+    <GameContext.Provider value={{ gameState, setGameState }}>
+      {children}
+    </GameContext.Provider>
+  );
+};
 const UseGameContext = () => {
-	const context = useContext(GameContext);
-	if (!context) {
-		throw new Error("useGameContext must be used within a GameProvider");
-	}
-	return context
-}
-export {GameProvider, UseGameContext}
+  const context = useContext(GameContext);
+  if (!context) {
+    throw new Error("useGameContext must be used within a GameProvider");
+  }
+  return context;
+};
+export { GameProvider, UseGameContext };

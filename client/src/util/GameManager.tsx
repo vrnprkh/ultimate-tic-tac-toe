@@ -2,8 +2,12 @@ import { BoardData } from "../components/Board";
 
 export interface GameState {
   boardData: BoardData;
-  playerNumber: number; // 1 for X -> -1 for O
+  player1id: string; // 1 for X -> -1 for O
   turn: number;
+  player1name? : string;
+  player2name? : string;
+  legalMoves : number[];
+  roomId : string;
 }
 
 const checkLines = [

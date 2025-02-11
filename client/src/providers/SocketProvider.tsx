@@ -4,7 +4,7 @@ import { io, Socket } from "socket.io-client";
 const SocketContext = React.createContext<Socket | null>(null);
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
-  const socket = io("wss://seal-app-ys7lx.ondigitalocean.app", {
+  const socket = io("localhost:3000", {
     transports: ["websocket", "polling"],
   });
   return (
