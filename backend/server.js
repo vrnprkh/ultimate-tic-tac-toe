@@ -4,7 +4,7 @@ const { GameState } = require("./game");
 const app = express();
 const httpServer = require("http").createServer(app);
 const PORT = process.env.PORT || 3002;
-const io = require("socket.io")(3000);
+const io = require("socket.io")(httpServer);
 const { v4: uuidv4 } = require("uuid");
 const {
   addUser,
