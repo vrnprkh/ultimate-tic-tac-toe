@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Board from "../components/Board";
 import { UseGameContext } from "../providers/GameProvider";
 import { useSocketContext } from "../providers/SocketProvider";

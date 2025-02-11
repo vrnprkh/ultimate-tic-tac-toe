@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+// import { useEffect, useRef, useState } from "react";
 import "./Board.css";
 import { UseGameContext } from "../providers/GameProvider";
-import { propogateBoardState } from "../util/GameManager";
+// import { propogateBoardState } from "../util/GameManager";
 import { useSocketContext } from "../providers/SocketProvider";
 
 // boards can be nested (ultimate tictacotoe) so
